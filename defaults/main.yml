@@ -1,0 +1,5 @@
+---
+conda_installer: https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh
+conda_prefix: /opt/conda
+conda_update_base: no
+conda_user: root

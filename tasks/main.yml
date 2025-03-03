@@ -1,0 +1,47 @@
+---
+- name: Check if conda is installed
+  ansible.builtin.stat:
+    path: "{{ conda_prefix }}/bin/conda"
+  register: conda_exe
+
+- name: Conda installation Block
+  when: not conda_exe.stat.exists
+  block:
+    - name: Download conda installer
+      ansible.builtin.get_url:
+        url: "{{ conda_installer }}"
+        dest: /tmp/miniforge.sh
+        mode: "0755"
+
+    - name: Install conda
+      become_user: "{{ conda_user | default(root)}}"
+      ansible.builtin.command:
+        cmd: /tmp/miniforge.sh -b -p {{ conda_prefix }}
+        creates: "{{ conda_prefix }}/bin/conda"
+
+    - name: Remove conda installer
+      ansible.builtin.file:
+        path: /tmp/miniforge.sh
+        state: absent
+
+- name: Ensure Conda is initialised in general profile
+  ansible.builtin.file:
+    src: "{{ conda_prefix }}/etc/profile.d/conda.sh"
+    dest: /etc/profile.d/conda.sh
+    state: link
+
+- name: Ensure Mamba is initialised in general profile
+  ansible.builtin.file:
+    src: "{{ conda_prefix }}/etc/profile.d/mamba.sh"
+    dest: /etc/profile.d/mamba.sh
+    state: link
+
+- name: Update conda and base environment
+  become_user: "{{ conda_user | default(root)}}"
+  ansible.builtin.shell: |
+    source /etc/profile.d/conda.sh
+    conda activate base
+    conda update -y --all -q
+  args:
+    executable: /bin/bash
+  when: conda_update_base
