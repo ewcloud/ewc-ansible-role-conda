@@ -31,10 +31,21 @@
     state: link
 
 - name: Ensure Mamba is initialised in general profile
-  ansible.builtin.file:
-    src: "{{ conda_prefix }}/etc/profile.d/mamba.sh"
+  copy:
     dest: /etc/profile.d/mamba.sh
-    state: link
+    content: |
+      export MAMBA_ROOT_PREFIX="{{ conda_prefix }}"
+      __mamba_setup="$("{{ conda_prefix }}/bin/mamba" shell hook --shell posix 2> /dev/null)"
+      if [ $? -eq 0 ]; then
+          eval "$__mamba_setup"
+      else
+          alias mamba="{{ conda_prefix }}/bin/mamba"  # Fallback on help from mamba activate
+      fi
+      unset __mamba_setup
+    force: yes
+    owner: root
+    group: root
+    mode: '0644'
 
 - name: Update conda and base environment
   become_user: "{{ conda_user | default(root)}}"
