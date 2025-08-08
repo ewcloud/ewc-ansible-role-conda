@@ -1,5 +1,5 @@
 ---
 conda_installer: https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh
 conda_prefix: "{{ morpheus['customOptions']['conda_prefix'] | default('/opt/conda') }}"
-conda_update_base: no
-conda_user: "{{ morpheus['customOptions']['conda_user'] | default('root') }}" 
+conda_update_base: false
+conda_user: "{{ morpheus['customOptions']['conda_user'] | default('root') }}"
