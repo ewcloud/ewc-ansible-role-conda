@@ -3,6 +3,13 @@
 All notable changes to this project are documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0](https://github.com/ewcloud/ewc-ansible-role-conda/compare/1.0.0...1.1.0) (2025-08-12)
+
+
+### Features
+
+* Add automation for linting/release ([d921e34](https://github.com/ewcloud/ewc-ansible-role-conda/commit/d921e34f6ccb433e2d955db7a8a63ae58879a04d))
+
 # 1.0.0 (2025-06-16)
 
 
