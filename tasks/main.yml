@@ -14,7 +14,8 @@
         mode: "0755"
 
     - name: Install conda
-      become_user: "{{ conda_user | default(root)}}"
+      become: true
+      become_user: "{{ conda_user }}"
       ansible.builtin.command:
         cmd: /tmp/miniforge.sh -b -p {{ conda_prefix }}
         creates: "{{ conda_prefix }}/bin/conda"
@@ -24,14 +25,14 @@
         path: /tmp/miniforge.sh
         state: absent
 
-- name: Ensure Conda is initialised in general profile
+- name: Ensure Conda is initialized in general profile
   ansible.builtin.file:
     src: "{{ conda_prefix }}/etc/profile.d/conda.sh"
     dest: /etc/profile.d/conda.sh
     state: link
 
-- name: Ensure Mamba is initialised in general profile
-  copy:
+- name: Ensure Mamba is initialized in general profile
+  ansible.builtin.copy:
     dest: /etc/profile.d/mamba.sh
     content: |
       export MAMBA_ROOT_PREFIX="{{ conda_prefix }}"
@@ -42,13 +43,13 @@
           alias mamba="{{ conda_prefix }}/bin/mamba"  # Fallback on help from mamba activate
       fi
       unset __mamba_setup
-    force: yes
     owner: root
     group: root
     mode: '0644'
 
 - name: Update conda and base environment
-  become_user: "{{ conda_user | default(root)}}"
+  become: true
+  become_user: "{{ conda_user }}"
   ansible.builtin.shell: |
     source /etc/profile.d/conda.sh
     conda activate base
